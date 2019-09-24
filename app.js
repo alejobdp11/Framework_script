@@ -1,55 +1,144 @@
-$( document ).ready(function() {
-  var valores=$('.col-2').children();
-  console.log(valores);
-
-});
-
   $(".btn-reinicio").click(function(){
-
+    // carga de tablero
+    $("#juegofin").hide();
     $(".btn-reinicio").replaceWith("<button class='btn-reinicio'>Reiniciar</button>");
+    colortitulo();
+      cargardatos();
+      mover();
+  });
+  function colortitulo(){
+       $(".main-titulo").css({'color':'blue'});
+       var control = setTimeout(function(){colortitulo1()},1000);
+   }
+   function colortitulo1(){
+        $(".main-titulo").css({'color':'white'});
+        var control = setTimeout(function(){colortitulo()},1000);
+    }
+  function cargardatos(){
+    var columnas = $(".panel-tablero div");
+      for (var i = 0; i < columnas.length; i++) {
+        for (var j = 0; j <6; j++) {
+          var num=Math.round(Math.random() * (4 - 1) + 1);
+          $(columnas[i]).append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
+        }
+      }
+      activarcomprobacion();
+    //  rellenar();
+  }
 
-    for (var i = 0; i <6; i++) {
-      var num=Math.round(Math.random() * (4 - 1) + 1);;
-      $(".col-1").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-      opera();
-      opera3();
+window.onload = updateClock;
+  var totalTime = 120;
+  function updateClock() {
+    document.getElementById('timer').innerHTML = totalTime;
+    if(totalTime==0){
+      $(".panel-tablero").hide();
+      $("#juegofin").show();
+      $(".panel-score").width(1500).height(800);
+      $(".btn-reinicio").hide();
+      $(".time").hide();
+      $(".main-titulo").css({'font-size':'4em'});
+    }else{
+
+      totalTime-=1;
+      setTimeout("updateClock()",1000);
     }
-    for (var i = 0; i <6; i++) {
-      var num=Math.round(Math.random() * (4 - 1) + 1);;
-      $(".col-2").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-      opera();
+  }
+  function activarcomprobacion(){
+       //se activa el método alert luego de 2 segundos
+       var control = setTimeout(function(){comprobarverticales()},2000);
+   }
+   function activarcomprobacion1(){
+        //se activa el método alert luego de 2 segundos
+        var control = setTimeout(function(){comprobarhorizontales()},2000);
     }
-    for (var i = 0; i <6; i++) {
-      var num=Math.round(Math.random() * (4 - 1) + 1);;
-      $(".col-3").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-      opera();
+   function activarrelleno(){
+        //se activa el método alert luego de 2 segundos
+        var control = setTimeout(function(){rellenar()},2000);
     }
-    for (var i = 0; i <6; i++) {
-      var num=Math.round(Math.random() * (4 - 1) + 1);;
-      $(".col-4").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-      opera();
+  function comprobarverticales(){
+    var columnasllenas = $(".panel-tablero div").children();
+      for (var i = 0; i < 30; i++) {
+        if (columnasllenas[i].id == columnasllenas[i+6].id && columnasllenas[i].id == columnasllenas[i+12].id && columnasllenas[i+6].id == columnasllenas[i+12].id) {
+          console.log("posición "+i+"-----"+columnasllenas[i].id +" --- "+columnasllenas[i+6].id +" --- "+columnasllenas[i+12].id +" --- ");
+          var marcador=$('#score-text').text();
+          var marca=parseInt(marcador);
+          marca=marca+10;
+          $('#score-text').text(marca);
+          $(columnasllenas[i+12]).effect( "pulsate",2000);
+          $(columnasllenas[i+6]).effect( "pulsate",2000);
+          $(columnasllenas[i]).effect( "pulsate",2000,function(){
+            eliminarverticales();
+          } );
+        }else {
+          comprobarhorizontales();
+        }
+      }
+
     }
-    for (var i = 0; i <6; i++) {
-      var num=Math.round(Math.random() * (4 - 1) + 1);;
-      $(".col-5").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-      opera();
+
+    function comprobarhorizontales(){
+      var marcador=$('#score-text').text();
+      var marca=parseInt(marcador);
+    for (var j = 0; j <7; j++) {
+      var valores=$('.col-'+j+'').children();
+
+    for (var i = 2; i < valores.length; i++) {
+      if (valores[i-2].id == valores[i-1].id && valores[i-2].id == valores[i].id && valores[i-2].id == valores[i].id) {
+        marca=marca+10;
+        console.log(marcador);
+        $(valores[i-2]).effect( "pulsate",2000);
+        $(valores[i-1]).effect( "pulsate",2000);
+        $(valores[i]).effect( "pulsate",2000,function(){
+          eliminarhorizontales();
+        } );
+      }
     }
-    for (var i = 0; i <6; i++) {
-      var num=Math.round(Math.random() * (4 - 1) + 1);;
-      $(".col-6").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-      opera();
     }
-    for (var i = 0; i <6; i++) {
-      var num=Math.round(Math.random() * (4 - 1) + 1);;
-      $(".col-7").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-      opera();
+    $('#score-text').text(marca);
+    marca=0;
     }
-    //cambio de color del titulo
-    $(".main-titulo").css("color","blue");
-    //mover elementos-----------------
+    function eliminarverticales(){
+      var columnasllenas = $(".panel-tablero div").children();
+        for (var i = 0; i < 30; i++) {
+          if (columnasllenas[i].id == columnasllenas[i+6].id && columnasllenas[i].id == columnasllenas[i+12].id && columnasllenas[i+6].id == columnasllenas[i+12].id) {
+              columnasllenas[i].remove();
+              columnasllenas[i+6].remove();
+              columnasllenas[i+12].remove();
+            }
+          }activarrelleno();
+        }
+  function eliminarhorizontales(){
+    for (var j = 0; j <7; j++) {
+      var valores=$('.col-'+j+'').children();
+
+    for (var i = 2; i < valores.length; i++) {
+      if (valores[i-2].id == valores[i-1].id && valores[i-2].id == valores[i].id && valores[i-2].id == valores[i].id) {
+        valores[i-2].remove();
+        valores[i-1].remove();
+        valores[i].remove();
+      }
+    }
+  }activarrelleno();
+}
+    function rellenar(){
+    for (var i = 1; i <8; i++) {
+      var columnasllenas = $(".col-"+i+"").children();
+      var n= columnasllenas.length;
+      console.log("numero -----------------"+n);
+        if (n<6) {
+          for (var j = 0; j < 6 - n; j++) {
+            var num=Math.round(Math.random() * (4 - 1) + 1);
+            $(".col-"+i+"").prepend('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">').slideDown("slow");
+          }
+        }
+      }
+        activarcomprobacion();
+      activarcomprobacion1();
+  }
+
+function mover(){
 
 
-    $(function() {
 
       //  $(".soltar" ).draggable();
         //  $(".col-2").droppable();
@@ -143,70 +232,4 @@ $( document ).ready(function() {
       opera();
     }
   });
-    });
-    });
-      //comprobar las figuras
-    function opera(){
-      var marcador=$('#score-text').text();
-      var marca=parseInt(marcador);
-    for (var j = 0; j <6; j++) {
-      var valores=$('.col-'+j+'').children();
-
-    for (var i = 2; i < valores.length; i++) {
-      if (valores[i-2].id == valores[i-1].id && valores[i-2].id == valores[i].id && valores[i-2].id == valores[i].id) {
-        marca=marca+10;
-        console.log(marcador);
-        valores[i-2].remove();
-        valores[i-1].remove();
-        valores[i].remove();
-        var num=Math.round(Math.random() * (4 - 1) + 1);;
-        $(".col-"+j+"").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-        var num=Math.round(Math.random() * (4 - 1) + 1);;
-        $(".col-"+j+"").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-        var num=Math.round(Math.random() * (4 - 1) + 1);;
-        $(".col-"+j+"").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-      }
-    }
-    }
-    $('#score-text').text(marca);
-    marca=0;
-    }
-
-
-    function opera3(){
-      var marcador=$('#score-text').text();
-      var marca=parseInt(marcador);
-      var valores1=$('.col-2').children();
-      var valores2=$('.col-3').children();
-      var valores=$('.col-4').children();
-    for (var i = 0; i < valores.length; i++) {
-      if (valores[i].id == valores1[i].id && valores[i].id == valores2[i].id && valores1[i].id == valores2[i].id) {
-        marca=marca+10;
-        console.log(marcador);
-        valores[i].remove();
-        valores1[i].remove();
-        valores2[i].remove();
-        var num=Math.round(Math.random() * (4 - 1) + 1);;
-        $(".col-4").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-        var num=Math.round(Math.random() * (4 - 1) + 1);;
-        $(".col-2").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-        var num=Math.round(Math.random() * (4 - 1) + 1);;
-        $(".col-3").append('<img class="soltar" id="'+num+'" src="image/'+num+'.png" alt="">');
-      }
-    }
-
-    $('#score-text').text(marca);
-    marca=0;
-    }
-    window.onload = updateClock;
-    var totalTime = 120;
-    function updateClock() {
-      document.getElementById('timer').innerHTML = totalTime;
-      if(totalTime==0){
-        var marcador=$('#score-text').text();
-        alert(marcador);
-      }else{
-        totalTime-=1;
-        setTimeout("updateClock()",1000);
-      }
-    }
+}
